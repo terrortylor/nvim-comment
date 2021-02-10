@@ -16,21 +16,6 @@ M.config = {
   operator_mapping = "gc"
 }
 
-local function escape(x)
-  return (x:gsub('%%', '%%%%')
-    :gsub('%^', '%%^')
-    :gsub('%$', '%%$')
-    :gsub('%(', '%%(')
-    :gsub('%)', '%%)')
-    :gsub('%.', '%%.')
-    :gsub('%[', '%%[')
-    :gsub('%]', '%%]')
-    :gsub('%*', '%%*')
-    :gsub('%+', '%%+')
-    :gsub('%-', '%%-')
-    :gsub('%?', '%%?'))
-end
-
 local function get_comment_wrapper()
   local cs = api.nvim_buf_get_option(0, 'commentstring')
 
@@ -77,10 +62,10 @@ end
 local function uncomment_line(l, left, right)
   local line = l
   if right ~= '' then
-    local esc_right = escape(right)
+    local esc_right = vim.pesc(right)
     line = line:gsub(esc_right .. '$', '')
   end
-  local esc_left = escape(left)
+  local esc_left = vim.pesc(left)
   line = line:gsub(esc_left, '', 1)
 
   return line
@@ -110,7 +95,7 @@ function M.comment_toggle(line_start, line_end)
   if not lines then return end
 
   -- check if any lines commented, capture indent
-  local esc_left = escape(left)
+  local esc_left = vim.pesc(left)
   local commented_lines_counter = 0
   local empty_counter = 0
   local indent
