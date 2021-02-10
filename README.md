@@ -6,7 +6,7 @@ Without a doubt this plugin **is not required** and is a rip off of [TPope's Com
 * Doesn't require nightly build (works on NeoVim 0.4.x)
 * Comments each line, rather than adds block comments; making it easier to toggle code when debugging
 * Uses the built in **commentstring** buffer option to define comment markers
-* Where a left hand side marker doesn't have a **space** character as padding this is added
+* Where a marker doesn't have a **space** character as padding this is added, configurable
 ** This can be disabled in the options, see below but if useful when workig with numerous linters
 * Supports motions, aimed to support the feature set of [TPope's Commentary](https://github.com/tpope/vim-commentary)
 
@@ -40,8 +40,8 @@ However you can pass in some config options, the defaults are:
 
 ```lua
 {
-  -- Linters prefer comment and line to hae a space in between
-  left_marker_padding = true,
+  -- Linters prefer comment and line to have a space in between markers
+  marker_padding = true,
   -- should comment out empty or whitespace only lines
   comment_empty = true,
   -- Should key mappings be created
@@ -68,9 +68,9 @@ require('nvim_comment').setup({create_mappings = false})
 require('nvim_comment').setup({line_mapping = "<leader>cl", operator_mapping = "<leader>c"})
 ```
 
-**Disable left marker padding**
+**Disable marker padding**
 ```lua
-require('nvim_comment').setup({left_marker_padding = false})
+require('nvim_comment').setup({marker_padding = false})
 ```
 
 **Changing/Setting commentstring**

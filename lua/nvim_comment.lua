@@ -5,7 +5,7 @@ local M = {}
 
 M.config = {
   -- Linters prefer comment and line to hae a space in between
-  left_marker_padding = true,
+  marker_padding = true,
   -- should comment out empty or whitespace only lines
   comment_empty = true,
   -- Should key mappings be created
@@ -40,10 +40,12 @@ local function get_comment_wrapper()
    local right = cs:match('^.*%%s(.*)')
 
    -- left comment markers should have padding as linterers preffer
-   -- TODO config option
-   if  M.config.left_marker_padding then
+   if  M.config.marker_padding then
      if not left:match("%s$") then
        left = left .. " "
+     end
+     if right ~= "" and not right:match("^%s") then
+       right = " " .. right
      end
    end
 
@@ -107,8 +109,7 @@ function M.comment_toggle(line_start, line_end)
   local lines = api.nvim_buf_get_lines(0, line_start - 1, line_end, false)
   if not lines then return end
 
-  -- check if any lines commented,
-  -- capture indent
+  -- check if any lines commented, capture indent
   local esc_left = escape(left)
   local commented_lines_counter = 0
   local empty_counter = 0
@@ -122,7 +123,8 @@ function M.comment_toggle(line_start, line_end)
     -- TODO what if already commented line has smallest indent?
     -- TODO no tests for this indent block
     local line_indent = v:match("^%s+")
-    if line_indent and (not indent or string.len(line_indent) < string.len(indent)) then
+    if not line_indent then line_indent = "" end
+    if not indent or string.len(line_indent) < string.len(indent) then
       indent = line_indent
     end
   end
@@ -156,7 +158,7 @@ function M.setup(user_opts)
 
   -- Messy, change with nvim_exec once merged
   vim.api.nvim_command('let g:loaded_text_objects_plugin = 1')
-  local vim_func = "function! CommentOperator(type) abort \n execute \"lua require('nvim_comment').operator()\" \n endfunction"
+  local vim_func = "function! CommentOperator(type) abort \n execute \"lua require('nvim_comment').operator()\" \n endfunction" -- luacheck:ignore
   vim.api.nvim_call_function("execute", {vim_func})
   vim.api.nvim_command("command! -range CommentToggle lua require('nvim_comment').comment_toggle(<line1>, <line2>)")
 

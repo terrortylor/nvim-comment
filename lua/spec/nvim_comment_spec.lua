@@ -20,7 +20,7 @@ describe('ui', function()
         api_mock = mock(vim.api, true)
         -- reset config to default
         testModule.config = {
-          left_marker_padding = true
+          marker_padding = true
         }
       end)
 
@@ -65,7 +65,7 @@ describe('ui', function()
 
         for string,expected in pairs(commentstrings) do
           it('Should return comment wrapper(s) for: ' .. string .. '  no left marker padding', function()
-            testModule.config.left_marker_padding = false
+            testModule.config.marker_padding = false
             api_mock.nvim_buf_get_option.on_call_with(0, 'commentstring').returns(string)
             local left, right = testModule._get_comment_wrapper(string)
 
@@ -76,7 +76,7 @@ describe('ui', function()
 
         local padded_commentstrings = {
           ['COMMENT %s'] = {'COMMENT ', ''},
-          ['{% comment %}%s{% endcomment %}'] = {'{% comment %} ', '{% endcomment %}'},
+          ['{% comment %}%s{% endcomment %}'] = {'{% comment %} ', ' {% endcomment %}'},
           ['c# %s'] = {'c# ', ''},
           ['dnl %s'] = {'dnl ', ''},
           ['NB. %s'] = {'NB. ', ''},
@@ -85,15 +85,15 @@ describe('ui', function()
           ['# %s'] = {'# ', ''},
           ['%%s'] = {'% ', ''},
           ['% %s'] = {'% ', ''},
-          ['(*%s*)'] = {'(* ', '*)'},
-          ['(;%s;)'] = {'(; ', ';)'},
+          ['(*%s*)'] = {'(* ', ' *)'},
+          ['(;%s;)'] = {'(; ', ' ;)'},
           ['**%s'] = {'** ', ''},
           ['-# %s'] = {'-# ', ''},
           ['-- %s'] = {'-- ', ''},
           ['--  %s'] = {'--  ', ''},
           ['.. %s'] = {'.. ', ''},
           ['.\\"%s'] = {'.\\" ', ''},
-          ['/*%s*/'] = {'/* ', '*/'},
+          ['/*%s*/'] = {'/* ', ' */'},
           ['/* %s */'] = {'/* ', ' */'},
           ['//%s'] = {'// ', ''},
           ['// %s'] = {'// ', ''},
@@ -101,15 +101,15 @@ describe('ui', function()
           [';%s'] = {'; ', ''},
           ['; %s'] = {'; ', ''},
           ['; // %s'] = {'; // ', ''},
-          ['<!--%s-->'] = {'<!-- ', '-->'},
-          ['<%#%s%>'] = {'<%# ', '%>'},
+          ['<!--%s-->'] = {'<!-- ', ' -->'},
+          ['<%#%s%>'] = {'<%# ', ' %>'},
           ['> %s'] = {'> ', ''},
           ['      *%s'] = {'      * ', ''},
           ['"%s'] = {'" ', ''},
         }
 
         for string,expected in pairs(padded_commentstrings) do
-          it('Should return comment wrapper(s) for: ' .. string .. '  with left marker padding', function()
+          it('Should return comment wrapper(s) for: ' .. string .. ' with marker padding', function()
             api_mock.nvim_buf_get_option.on_call_with(0, 'commentstring').returns(string)
             local left, right = testModule._get_comment_wrapper(string)
 
@@ -317,9 +317,9 @@ describe('ui', function()
           testModule.comment_toggle(1, 3)
 
           assert.stub(api_mock.nvim_buf_set_lines).was_called_with(0, 0, 3, false, {
-            "(* line1*)",
-            "(* line2*)",
-            "(* line3*)",
+            "(* line1 *)",
+            "(* line2 *)",
+            "(* line3 *)",
           })
           assert.stub(api_mock.nvim_call_function).was_called_with('setpos', {"'<", {0, 1, 1, 0}})
           assert.stub(api_mock.nvim_call_function).was_called_with('setpos', {"'>", {0, 3, 2147483647, 0}})
@@ -328,9 +328,9 @@ describe('ui', function()
         it('Should remove left and right hand side comments to entire range', function()
           api_mock.nvim_buf_get_option.on_call_with(0, 'commentstring').returns('(*%s*)')
           api_mock.nvim_buf_get_lines.on_call_with(0, 0, 3, false).returns({
-            "(* line1*)",
-            "(* line2*)",
-            "(* line3*)",
+            "(* line1 *)",
+            "(* line2 *)",
+            "(* line3 *)",
           })
 
           testModule.comment_toggle(1, 3)
