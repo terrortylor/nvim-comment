@@ -57,11 +57,7 @@ local function comment_line(l, indent, left, right, comment_empty)
   local line = l
   local comment_pad = indent
 
-  if not comment_empty then
-    if l:match("^%s*$") then
-      return line
-    end
-  end
+  if not comment_empty and l:match("^%s*$") then return line end
 
   -- most linters want padding to be formatted correctly
   -- so remove comment padding from line
@@ -71,9 +67,7 @@ local function comment_line(l, indent, left, right, comment_empty)
     comment_pad = ""
   end
 
-  if right ~= '' then
-    line = line .. right
-  end
+  if right ~= '' then line = line .. right end
   line = comment_pad .. left .. line
   return line
 end
@@ -108,14 +102,10 @@ end
 
 function M.comment_toggle(line_start, line_end)
   local left, right = get_comment_wrapper()
-  if not left or not right then
-    return
-  end
+  if not left or not right then return end
 
   local lines = api.nvim_buf_get_lines(0, line_start - 1, line_end, false)
-  if not lines then
-    return
-  end
+  if not lines then return end
 
   -- check if any lines commented,
   -- capture indent
@@ -131,7 +121,6 @@ function M.comment_toggle(line_start, line_end)
     end
     -- TODO what if already commented line has smallest indent?
     -- TODO no tests for this indent block
-
     local line_indent = v:match("^%s+")
     if line_indent and (not indent or string.len(line_indent) < string.len(indent)) then
       indent = line_indent
@@ -165,14 +154,11 @@ function M.setup(user_opts)
     end
   end
 
-  vim.api.nvim_exec([[
-  let g:loaded_text_objects_plugin = 1
-  function! CommentOperator(type) abort
-    execute "lua require('nvim_comment').operator()"
-  endfunction
-
-  command! -range CommentToggle lua require('nvim_comment').comment_toggle(<line1>, <line2>)
-  ]], false)
+  -- Messy, change with nvim_exec once merged
+  vim.api.nvim_command('let g:loaded_text_objects_plugin = 1')
+  local vim_func = "function! CommentOperator(type) abort \n execute \"lua require('nvim_comment').operator()\" \n endfunction"
+  vim.api.nvim_call_function("execute", {vim_func})
+  vim.api.nvim_command("command! -range CommentToggle lua require('nvim_comment').comment_toggle(<line1>, <line2>)")
 
   if M.config.create_mappings then
     local opts = {noremap = true, silent = true}
