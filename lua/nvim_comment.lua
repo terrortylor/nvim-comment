@@ -86,9 +86,7 @@ local function uncomment_line(l, left, right)
   return line
 end
 
-function M.operator()
-  local mode = api.nvim_call_function("visualmode", {})
-  local line1, line2
+function M.operator(mode)
   if not mode then
     line1 = api.nvim_win_get_cursor(0)[1]
     line2 = line1
@@ -99,7 +97,8 @@ function M.operator()
     line1 = api.nvim_buf_get_mark(0, "[")[1]
     line2 = api.nvim_buf_get_mark(0, "]")[1]
   end
-    M.comment_toggle(line1, line2)
+
+  M.comment_toggle(line1, line2)
 end
 
 function M.comment_toggle(line_start, line_end)
@@ -158,7 +157,7 @@ function M.setup(user_opts)
 
   -- Messy, change with nvim_exec once merged
   vim.api.nvim_command('let g:loaded_text_objects_plugin = 1')
-  local vim_func = "function! CommentOperator(type) abort \n execute \"lua require('nvim_comment').operator()\" \n endfunction" -- luacheck:ignore
+  local vim_func = "function! CommentOperator(type) abort \n let reg_save = @@\n execute \"lua require('nvim_comment').operator('\" . a:type. \"')\"\n let @@ = reg_save\n endfunction"
   vim.api.nvim_call_function("execute", {vim_func})
   vim.api.nvim_command("command! -range CommentToggle lua require('nvim_comment').comment_toggle(<line1>, <line2>)")
 
