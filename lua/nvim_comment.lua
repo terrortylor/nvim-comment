@@ -90,13 +90,14 @@ function M.operator(mode)
   if not mode then
     line1 = api.nvim_win_get_cursor(0)[1]
     line2 = line1
-  elseif mode == "V" then
+  elseif mode:match("[vV]") then
     line1 = api.nvim_buf_get_mark(0, "<")[1]
     line2 = api.nvim_buf_get_mark(0, ">")[1]
   else
     line1 = api.nvim_buf_get_mark(0, "[")[1]
     line2 = api.nvim_buf_get_mark(0, "]")[1]
   end
+  -- print("line1", line1, "line2", line2)
 
   M.comment_toggle(line1, line2)
 end
