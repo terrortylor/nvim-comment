@@ -158,7 +158,13 @@ function M.setup(user_opts)
 
   -- Messy, change with nvim_exec once merged
   vim.api.nvim_command('let g:loaded_text_objects_plugin = 1')
-  local vim_func = "function! CommentOperator(type) abort \n let reg_save = @@\n execute \"lua require('nvim_comment').operator('\" . a:type. \"')\"\n let @@ = reg_save\n endfunction"
+  local vim_func = [[
+  function! CommentOperator(type) abort
+    let reg_save = @@
+    execute "lua require('nvim_comment').operator('" . a:type. "')"
+    let @@ = reg_save
+  endfunction
+  ]]
   vim.api.nvim_call_function("execute", {vim_func})
   vim.api.nvim_command("command! -range CommentToggle lua require('nvim_comment').comment_toggle(<line1>, <line2>)")
 
