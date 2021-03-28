@@ -1,0 +1,36 @@
+name: Run Tests
+
+on: [push, pull_request]
+
+jobs:
+  Tests:
+    name: Linting and Test
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Prepare
+        run: |
+          # sudo apt-get update
+          sudo apt-get install lua-check
+          mkdir -p ~/.local/share/nvim/site/pack/vendor/start
+          git clone --depth 1 https://github.com/nvim-lua/plenary.nvim ~/.local/share/nvim/site/pack/vendor/start/plenary.nvim
+          ln -s $(pwd) ~/.local/share/nvim/site/pack/vendor/start
+          mkdir -p build
+          wget https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
+          chmod +x nvim.appimage
+          mv nvim.appimage ./build/nvim
+      - name: Run Lint
+        run: make lint
+
+      - name: Run unit tests
+        run: |
+          export PATH="${PWD}/build/:${PATH}"
+          make unit
+          echo "exit code $?"
+
+      - name: Run tests
+        run: |
+          export PATH="${PWD}/build/:${PATH}"
+          make integration
+          echo "exit code $?"
