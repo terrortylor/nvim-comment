@@ -16,7 +16,7 @@ M.config = {
   operator_mapping = "gc"
 }
 
-local function escape(x)
+function M.escape(x)
   return (x:gsub('%%', '%%%%')
     :gsub('%^', '%%^')
     :gsub('%$', '%%$')
@@ -31,7 +31,7 @@ local function escape(x)
     :gsub('%?', '%%?'))
 end
 
-local function get_comment_wrapper()
+function M.get_comment_wrapper()
   local cs = api.nvim_buf_get_option(0, 'commentstring')
 
   -- make sure comment string is understood
@@ -55,7 +55,7 @@ local function get_comment_wrapper()
   end
 end
 
-local function comment_line(l, indent, left, right, comment_empty)
+function M.comment_line(l, indent, left, right, comment_empty)
   local line = l
   local comment_pad = indent
 
@@ -74,19 +74,20 @@ local function comment_line(l, indent, left, right, comment_empty)
   return line
 end
 
-local function uncomment_line(l, left, right)
+function M.uncomment_line(l, left, right)
   local line = l
   if right ~= '' then
-    local esc_right = escape(right)
+    local esc_right = M.escape(right)
     line = line:gsub(esc_right .. '$', '')
   end
-  local esc_left = escape(left)
+  local esc_left = M.escape(left)
   line = line:gsub(esc_left, '', 1)
 
   return line
 end
 
 function M.operator(mode)
+  local line1, line2
   if not mode then
     line1 = api.nvim_win_get_cursor(0)[1]
     line2 = line1
@@ -103,14 +104,14 @@ function M.operator(mode)
 end
 
 function M.comment_toggle(line_start, line_end)
-  local left, right = get_comment_wrapper()
+  local left, right = M.get_comment_wrapper()
   if not left or not right then return end
 
   local lines = api.nvim_buf_get_lines(0, line_start - 1, line_end, false)
   if not lines then return end
 
   -- check if any lines commented, capture indent
-  local esc_left = escape(left)
+  local esc_left = M.escape(left)
   local commented_lines_counter = 0
   local empty_counter = 0
   local indent
@@ -134,9 +135,9 @@ function M.comment_toggle(line_start, line_end)
   for i,v in pairs(lines) do
     local line
     if comment then
-      line = comment_line(v, indent, left, right, M.config.comment_empty)
+      line = M.comment_line(v, indent, left, right, M.config.comment_empty)
     else
-      line = uncomment_line(v, left, right)
+      line = M.uncomment_line(v, left, right)
     end
     lines[i] = line
   end
@@ -158,6 +159,7 @@ function M.setup(user_opts)
 
   -- Messy, change with nvim_exec once merged
   vim.api.nvim_command('let g:loaded_text_objects_plugin = 1')
+  --luacheck: ignore
   local vim_func = "function! CommentOperator(type) abort \n let reg_save = @@\n execute \"lua require('nvim_comment').operator('\" . a:type. \"')\"\n let @@ = reg_save\n endfunction"
   vim.api.nvim_call_function("execute", {vim_func})
   vim.api.nvim_command("command! -range CommentToggle lua require('nvim_comment').comment_toggle(<line1>, <line2>)")
@@ -168,12 +170,6 @@ function M.setup(user_opts)
     vim.api.nvim_set_keymap("n", M.config.operator_mapping, ":set operatorfunc=CommentOperator<cr>g@", opts)
     vim.api.nvim_set_keymap("v", M.config.operator_mapping, ":<c-u>call CommentOperator(visualmode())<cr>", opts)
   end
-end
-
-if _TEST then
-  M._get_comment_wrapper = get_comment_wrapper
-  M._comment_line = comment_line
-  M._uncomment_line = uncomment_line
 end
 
 return M
