@@ -5,7 +5,14 @@ lint:
 	luacheck --no-color .
 	@echo
 
-test:
-	@echo "Run tests..."
-	busted -m "./lua/?.lua;./lua/?/?.lua;./lua/?/init.lua" lua
+unit:
+	@echo "Run unit tests..."
+	nvim --headless --noplugin -c 'packadd plenary.nvim' -c "PlenaryBustedDirectory lua/spec"
 	@echo
+
+integration:
+	@echo "Run integration tests..."
+	nvim --headless -c "PlenaryBustedDirectory tests"
+	@echo
+
+test: unit integration
