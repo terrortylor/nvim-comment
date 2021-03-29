@@ -12,7 +12,7 @@ unit:
 
 integration:
 	@echo "Run integration tests..."
-	nvim --headless -c "PlenaryBustedDirectory tests"
+	nvim --headless --noplugin -c "PlenaryBustedDirectory tests"
 	@echo
 
 test: unit integration
