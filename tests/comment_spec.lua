@@ -24,8 +24,6 @@ end
 describe('comment/uncomment', function()
 
   local input = [[
-local M = {}
-
 local function dummy_func()
   print("This is a dummy func")
 end
@@ -33,8 +31,6 @@ end
 local function another_dummy_func()
   print("This is a another dummy func")
 end
-
-return M
 ]]
 
   before_each(function()
@@ -49,8 +45,6 @@ return M
 
   it("Should comment/uncomment via motion and dot", function()
     local expected = [[
-local M = {}
-
 -- local function dummy_func()
   print("This is a dummy func")
 end
@@ -58,23 +52,19 @@ end
 local function another_dummy_func()
   print("This is a another dummy func")
 end
-
-return M
 ]]
 
     setUpBuffer(input, "lua")
     -- comment
-    runCommandAndAssert(3, "gcl", expected)
+    runCommandAndAssert(1, "gcl", expected)
     -- uncomment
-    runCommandAndAssert(3, "gcl", input)
+    runCommandAndAssert(1, "gcl", input)
      -- comment, via dot
-    runCommandAndAssert(3, ".", expected)
+    runCommandAndAssert(1, ".", expected)
   end)
 
   it("Should comment out another pararaph via dot", function()
     local first_expected = [[
-local M = {}
-
 -- local function dummy_func()
 --   print("This is a dummy func")
 -- end
@@ -82,13 +72,9 @@ local M = {}
 local function another_dummy_func()
   print("This is a another dummy func")
 end
-
-return M
 ]]
 
     local second_expected = [[
-local M = {}
-
 -- local function dummy_func()
 --   print("This is a dummy func")
 -- end
@@ -96,17 +82,15 @@ local M = {}
 -- local function another_dummy_func()
 --   print("This is a another dummy func")
 -- end
-
-return M
 ]]
 
     setUpBuffer(input, "lua")
     -- comment
-    runCommandAndAssert(4, "gcip", first_expected)
+    runCommandAndAssert(2, "gcip", first_expected)
     -- comment, via dot
-    runCommandAndAssert(9, ".", second_expected)
+    runCommandAndAssert(7, ".", second_expected)
     -- uncomment, via dot
-    runCommandAndAssert(9, "gcip", first_expected)
+    runCommandAndAssert(7, "gcip", first_expected)
   end)
 end)
 
