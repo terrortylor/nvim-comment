@@ -18,7 +18,7 @@ Either use the command `CommentToggle`, e.g.:
 
 * `CommentToggle` comment/uncomment current line
 * `67,69CommentToggle` comment/uncomment a range
-* `'<,>CommentToggle` comment/uncomment a visual selection
+* `'<,'>CommentToggle` comment/uncomment a visual selection
 
 Or use the defualt mappings:
 
