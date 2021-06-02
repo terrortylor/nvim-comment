@@ -8,7 +8,7 @@ Without a doubt this plugin **is not required** and is a rip off of [TPope's Com
 * Uses the built in **commentstring** buffer option to define comment markers
 * Where a marker doesn't have a **space** character as padding this is added, configurable
 ** This can be disabled in the options, see below but if useful when workig with numerous linters
-* Supports motions, aimed to support the feature set of [TPope's Commentary](https://github.com/tpope/vim-commentary)
+* Supports motions
 
 When the plugin is called it works out the range to comment/uncomment; if all lines in the given range are commented then it uncomments, otherwise it comments the range. This is useful when commenting a block out for testing with a real like comment in it; as for the plugin a comment is a comment.
 
