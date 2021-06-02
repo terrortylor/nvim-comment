@@ -1,7 +1,7 @@
 # nvim-comment
 
 Toggle comments in Neovim, using built in **commentstring** filetype option; written in Lua.
-Without a doubt this plugin **is not required** and is a rip off of [TPope's Commentary](https://github.com/tpope/vim-commentary)! What makes this plugin stand out over the numerous other comment plugins written in Lua are:
+Without a doubt this plugin **is not required** and is a rip off of [TPope's Commentary](https://github.com/tpope/vim-commentary) with less features! What makes this plugin stand out over the numerous other comment plugins written in Lua are:
 
 * Doesn't require nightly build (works on NeoVim 0.4.x)
 * Comments each line, rather than adds block comments; making it easier to toggle code when debugging
