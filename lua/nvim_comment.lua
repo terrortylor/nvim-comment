@@ -89,6 +89,7 @@ function M.operator(mode)
 end
 
 function M.comment_toggle(line_start, line_end)
+  line_end = vim.v.count ~= 0 and line_end + vim.v.count - 1 or line_end
   local left, right = M.get_comment_wrapper()
   if not left or not right then return end
 

@@ -63,6 +63,26 @@ end
     runCommandAndAssert(1, ".", expected)
   end)
 
+  it("Should comment/uncomment motion with count and dot", function()
+    local expected = [[
+-- local function dummy_func()
+--   print("This is a dummy func")
+end
+
+local function another_dummy_func()
+  print("This is a another dummy func")
+end
+]]
+
+    setUpBuffer(input, "lua")
+    -- comment
+    runCommandAndAssert(1, "gc2l", expected)
+    -- uncomment
+    runCommandAndAssert(1, "gc2l", input)
+     -- comment, via dot
+    runCommandAndAssert(1, ".", expected)
+  end)
+
   it("Should comment out another pararaph via dot", function()
     local first_expected = [[
 -- local function dummy_func()
