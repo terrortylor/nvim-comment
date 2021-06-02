@@ -43,6 +43,26 @@ end
   after_each(function()
   end)
 
+  it("Should comment/uncomment line with dot repeatable", function()
+    local expected = [[
+-- local function dummy_func()
+  print("This is a dummy func")
+end
+
+local function another_dummy_func()
+  print("This is a another dummy func")
+end
+]]
+
+    setUpBuffer(input, "lua")
+    -- comment
+    runCommandAndAssert(1, "gcl", expected)
+    -- uncomment
+    runCommandAndAssert(1, "gcl", input)
+     -- comment, via dot
+    runCommandAndAssert(1, ".", expected)
+  end)
+
   it("Should comment/uncomment via motion and dot", function()
     local expected = [[
 -- local function dummy_func()

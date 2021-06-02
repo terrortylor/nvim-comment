@@ -83,7 +83,6 @@ function M.operator(mode)
     line1 = api.nvim_buf_get_mark(0, "[")[1]
     line2 = api.nvim_buf_get_mark(0, "]")[1]
   end
-  -- print("line1", line1, "line2", line2)
 
   M.comment_toggle(line1, line2)
 end
@@ -137,11 +136,7 @@ function M.comment_toggle(line_start, line_end)
 end
 
 function M.setup(user_opts)
-  if user_opts then
-    for i,v in pairs(user_opts) do
-      M.config[i] = v
-    end
-  end
+  M.config = vim.tbl_extend('force', M.config, user_opts or {})
 
   -- Messy, change with nvim_exec once merged
   vim.api.nvim_command('let g:loaded_text_objects_plugin = 1')
@@ -157,7 +152,7 @@ function M.setup(user_opts)
 
   if M.config.create_mappings then
     local opts = {noremap = true, silent = true}
-    vim.api.nvim_set_keymap("n", M.config.line_mapping, "<CMD>CommentToggle<CR>", opts)
+    vim.api.nvim_set_keymap("n", M.config.line_mapping, ":set operatorfunc=CommentOperator<cr>g@", opts)
     vim.api.nvim_set_keymap("n", M.config.operator_mapping, ":set operatorfunc=CommentOperator<cr>g@", opts)
     vim.api.nvim_set_keymap("v", M.config.operator_mapping, ":<c-u>call CommentOperator(visualmode())<cr>", opts)
   end
