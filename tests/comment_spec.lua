@@ -56,9 +56,9 @@ end
 
     setUpBuffer(input, "lua")
     -- comment
-    runCommandAndAssert(1, "gcl", expected)
+    runCommandAndAssert(1, "gcc", expected)
     -- uncomment
-    runCommandAndAssert(1, "gcl", input)
+    runCommandAndAssert(1, "gcc", input)
      -- comment, via dot
     runCommandAndAssert(1, ".", expected)
   end)
