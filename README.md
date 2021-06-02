@@ -20,7 +20,7 @@ Either use the command `CommentToggle`, e.g.:
 * `67,69CommentToggle` comment/uncomment a range
 * `'<,'>CommentToggle` comment/uncomment a visual selection
 
-Or use the defualt mappings:
+Or use the default mappings:
 
 * `gcc` comment/uncomment current line
 * `gc{motion}` comment/uncomment selection defined by a motion:
