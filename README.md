@@ -28,7 +28,7 @@ Or use the default mappings:
 ** `gcc` comment/uncomment current line
 ** `gcip` comment/uncomment a paragraph
 ** `gc4w` comment/uncomment current line
-** `gc4l` comment/uncomment 4 lines down, starting with current line
+** `gc4j` comment/uncomment 4 lines below the current line
 
 ## Configure
 

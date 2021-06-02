@@ -87,7 +87,7 @@ end
     local expected = [[
 -- local function dummy_func()
 --   print("This is a dummy func")
-end
+-- end
 
 local function another_dummy_func()
   print("This is a another dummy func")
@@ -96,9 +96,9 @@ end
 
     setUpBuffer(input, "lua")
     -- comment
-    runCommandAndAssert(1, "gc2l", expected)
+    runCommandAndAssert(1, "gc2j", expected)
     -- uncomment
-    runCommandAndAssert(1, "gc2l", input)
+    runCommandAndAssert(1, "gc2j", input)
      -- comment, via dot
     runCommandAndAssert(1, ".", expected)
   end)
