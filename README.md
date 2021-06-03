@@ -22,7 +22,7 @@ Either use the command `CommentToggle`, e.g.:
 
 Or use the default mappings:
 
-* `gcc` comment/uncomment current line
+* `gcc` comment/uncomment current line, this does not take a count, if you want a count use the `gc{count}{motion}`
 * `gc{motion}` comment/uncomment selection defined by a motion:
 ** As lines are commented, any comment toggling actions will default to a linewise.
 ** `gcc` comment/uncomment current line
