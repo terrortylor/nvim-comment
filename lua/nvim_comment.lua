@@ -151,7 +151,7 @@ function M.setup(user_opts)
 
   if M.config.create_mappings then
     local opts = {noremap = true, silent = true}
-    vim.api.nvim_set_keymap("n", M.config.line_mapping, ":normal " .. M.config.operator_mapping .. "l<CR>", opts)
+    vim.api.nvim_set_keymap("n", M.config.line_mapping, ":set operatorfunc=CommentOperator<cr>g@l", opts)
     vim.api.nvim_set_keymap("n", M.config.operator_mapping, ":set operatorfunc=CommentOperator<cr>g@", opts)
     vim.api.nvim_set_keymap("v", M.config.operator_mapping, ":<c-u>call CommentOperator(visualmode())<cr>", opts)
   end

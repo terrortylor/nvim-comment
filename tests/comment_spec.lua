@@ -173,6 +173,53 @@ describe('padding flag', function()
   end)
 end)
 
+describe('mapping with leader as space', function()
+
+  local input = [[
+<note>
+  <to>Tove</to>
+  <from>Jani</from>
+</note>
+]]
+
+  it("Should toggle comment with line mapping", function()
+    require('nvim_comment').setup({
+      line_mapping = " cc",
+      operator_mapping = " c"
+    })
+
+    local expected = [[
+<note>
+  <to>Tove</to>
+  <!--<from>Jani</from>-->
+</note>
+]]
+
+    setUpBuffer(input, "xml")
+    -- comment
+    runCommandAndAssert(3, " cc", expected)
+  end)
+
+  it("Should toggle comment with operator mapping", function()
+    require('nvim_comment').setup({
+      line_mapping = " cc",
+      operator_mapping = " c"
+    })
+
+    local expected = [[
+<note>
+  <to>Tove</to>
+<!--  <from>Jani</from>-->
+<!--</note>-->
+]]
+
+    setUpBuffer(input, "xml")
+    -- comment
+    runCommandAndAssert(3, " c1j", expected)
+  end)
+
+end)
+
 describe('comment empty flag', function()
 
   local input = [[
