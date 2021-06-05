@@ -83,6 +83,14 @@ If you want to override the comment markers or add a new filetype just set the *
 vim.api.nvim_buf_set_option(0, "commentstring", "# %s")
 ```
 
+You can use an autocommand to automatically load your **commentstring** for certain file types:
+```vim
+" when you enter a (new) buffer
+autocmd BufEnter *.cpp,*.h :lua vim.api.nvim_buf_set_option(0, "commentstring", "// %s")
+" when you've changed the name of a file opened in a buffer, the file type may have changed
+autocmd BufFilePost *.cpp,*.h :lua vim.api.nvim_buf_set_option(0, "commentstring", "// %s")
+```
+
 # Installation
 
 Install just as you would a normal plugin, here are some options:
