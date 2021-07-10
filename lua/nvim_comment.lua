@@ -13,10 +13,16 @@ M.config = {
   -- Normal mode mapping left hand side
   line_mapping = "gcc",
   -- Visual/Operator mapping left hand side
-  operator_mapping = "gc"
+  operator_mapping = "gc",
+  -- Hook function to call before commenting takes place
+  hook = nil
 }
 
 function M.get_comment_wrapper()
+  if type(M.config.hook) == 'function' then
+    M.config.hook()
+  end
+
   local cs = api.nvim_buf_get_option(0, 'commentstring')
 
   -- make sure comment string is understood
@@ -137,23 +143,21 @@ end
 function M.setup(user_opts)
   M.config = vim.tbl_extend('force', M.config, user_opts or {})
 
-  -- Messy, change with nvim_exec once merged
-  vim.api.nvim_command('let g:loaded_text_objects_plugin = 1')
-  local vim_func = [[
-  function! CommentOperator(type) abort
-    let reg_save = @@
-    execute "lua require('nvim_comment').operator('" . a:type. "')"
-    let @@ = reg_save
-  endfunction
-  ]]
-  vim.api.nvim_call_function("execute", {vim_func})
-  vim.api.nvim_command("command! -range CommentToggle lua require('nvim_comment').comment_toggle(<line1>, <line2>)")
+  vim.g.loaded_text_objects_plugin = 1
+  api.nvim_exec([[
+    function! CommentOperator(type) abort
+      let reg_save = @@
+      execute "lua require('nvim_comment').operator('" . a:type. "')"
+      let @@ = reg_save
+    endfunction
+  ]], false)
+  api.nvim_command("command! -range CommentToggle lua require('nvim_comment').comment_toggle(<line1>, <line2>)")
 
   if M.config.create_mappings then
     local opts = {noremap = true, silent = true}
-    vim.api.nvim_set_keymap("n", M.config.line_mapping, ":set operatorfunc=CommentOperator<cr>g@l", opts)
-    vim.api.nvim_set_keymap("n", M.config.operator_mapping, ":set operatorfunc=CommentOperator<cr>g@", opts)
-    vim.api.nvim_set_keymap("v", M.config.operator_mapping, ":<c-u>call CommentOperator(visualmode())<cr>", opts)
+    api.nvim_set_keymap("n", M.config.line_mapping, "<Cmd>set operatorfunc=CommentOperator<CR>g@l", opts)
+    api.nvim_set_keymap("n", M.config.operator_mapping, "<Cmd>set operatorfunc=CommentOperator<CR>g@", opts)
+    api.nvim_set_keymap("v", M.config.operator_mapping, "<Cmd><c-u>call CommentOperator(visualmode())<CR>", opts)
   end
 end
 
