@@ -76,7 +76,7 @@ function M.operator(mode)
   if not mode then
     line1 = api.nvim_win_get_cursor(0)[1]
     line2 = line1
-  elseif mode:match("[vV]") then
+  elseif mode:match("[vV]") then
     line1 = api.nvim_buf_get_mark(0, "<")[1]
     line2 = api.nvim_buf_get_mark(0, ">")[1]
   else

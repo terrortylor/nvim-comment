@@ -1,15 +1,17 @@
 local function setUpBuffer(input, filetype)
   local buf = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_buf_set_option(buf, 'filetype', filetype)
-  vim.api.nvim_command("sbuffer " .. buf)
+  vim.api.nvim_command("buffer " .. buf)
 
   vim.api.nvim_buf_set_lines(0, 0, -1, true, vim.split(input, "\n"))
 end
 
-local function goToLineRunReturn(line, feedkeys)
+local function goToLineRunKeys(line, feedkeys)
     vim.api.nvim_win_set_cursor(0, {line,0})
-    vim.api.nvim_feedkeys(feedkeys, "x", false)
-
+    local keys = vim.api.nvim_replace_termcodes(feedkeys, true, false, true)
+    vim.api.nvim_feedkeys(keys, "x", false)
+end
+local function getBufLines()
     local result = vim.api.nvim_buf_get_lines(
     0, 0, vim.api.nvim_buf_line_count(0), false
     )
@@ -17,7 +19,8 @@ local function goToLineRunReturn(line, feedkeys)
 end
 
 local function runCommandAndAssert(line, feedkeys, expected)
-  local result = goToLineRunReturn(line, feedkeys)
+  goToLineRunKeys(line, feedkeys)
+  local result = getBufLines()
   assert.are.same(vim.split(expected, "\n"), result)
 end
 
@@ -277,3 +280,34 @@ end]]
   end)
 end)
 
+describe('issues', function()
+
+  before_each(function()
+    local testModule = require('nvim_comment')
+    testModule.setup({
+      marker_padding = true
+    })
+  end)
+
+  it("issue 22", function()
+    local input = [[
+local foo = 'foo'
+local bar = 'bar'
+local baz = 'baz'
+local foo = 'foo'
+local bar = 'bar'
+local baz = 'baz'
+]]
+    local expected = [[
+-- local foo = 'foo'
+-- local bar = 'bar'
+-- local baz = 'baz'
+local foo = 'foo'
+local bar = 'bar'
+local baz = 'baz'
+]]
+
+    setUpBuffer(input, "lua")
+    runCommandAndAssert(1, "gg0<c-v>jjgc", expected)
+  end)
+end)
