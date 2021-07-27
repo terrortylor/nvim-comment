@@ -13,7 +13,9 @@ M.config = {
   -- Normal mode mapping left hand side
   line_mapping = "gcc",
   -- Visual/Operator mapping left hand side
-  operator_mapping = "gc"
+  operator_mapping = "gc",
+  -- Hook function to call before commenting takes place
+  hook = nil
 }
 
 function M.get_comment_wrapper()
@@ -88,6 +90,10 @@ function M.operator(mode)
 end
 
 function M.comment_toggle(line_start, line_end)
+  if type(M.config.hook) == 'function' then
+    M.config.hook()
+  end
+
   local left, right = M.get_comment_wrapper()
   if not left or not right then return end
 
@@ -138,7 +144,7 @@ function M.setup(user_opts)
   M.config = vim.tbl_extend('force', M.config, user_opts or {})
 
   -- Messy, change with nvim_exec once merged
-  vim.api.nvim_command('let g:loaded_text_objects_plugin = 1')
+  vim.g.loaded_text_objects_plugin = 1
   local vim_func = [[
   function! CommentOperator(type) abort
     let reg_save = @@
@@ -151,9 +157,9 @@ function M.setup(user_opts)
 
   if M.config.create_mappings then
     local opts = {noremap = true, silent = true}
-    vim.api.nvim_set_keymap("n", M.config.line_mapping, ":set operatorfunc=CommentOperator<cr>g@l", opts)
-    vim.api.nvim_set_keymap("n", M.config.operator_mapping, ":set operatorfunc=CommentOperator<cr>g@", opts)
-    vim.api.nvim_set_keymap("v", M.config.operator_mapping, ":<c-u>call CommentOperator(visualmode())<cr>", opts)
+    api.nvim_set_keymap("n", M.config.line_mapping, "<Cmd>set operatorfunc=CommentOperator<CR>g@l", opts)
+    api.nvim_set_keymap("n", M.config.operator_mapping, "<Cmd>set operatorfunc=CommentOperator<CR>g@", opts)
+    api.nvim_set_keymap("v", M.config.operator_mapping, ":<C-u>call CommentOperator(visualmode())<CR>", opts)
   end
 end
 
