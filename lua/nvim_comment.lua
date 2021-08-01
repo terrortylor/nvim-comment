@@ -1,4 +1,3 @@
--- TODO add docs
 local api = vim.api
 
 local M = {}
@@ -23,17 +22,13 @@ function M.get_comment_wrapper()
 
   -- make sure comment string is understood
   if cs:find('%%s') then
-   local left = cs:match('^(.*)%%s')
-   local right = cs:match('^.*%%s(.*)')
+   local left, right = cs:match('^(.*)%%s(.*)')
+   if right == "" then right = nil end
 
    -- left comment markers should have padding as linterers preffer
    if  M.config.marker_padding then
-     if not left:match("%s$") then
-       left = left .. " "
-     end
-     if right ~= "" and not right:match("^%s") then
-       right = " " .. right
-     end
+     if not left:match("%s$") then left = left .. " " end
+     if right and not right:match("^%s") then right = " " .. right end
    end
 
    return left, right
@@ -56,20 +51,14 @@ function M.comment_line(l, indent, left, right, comment_empty)
     comment_pad = ""
   end
 
-  if right ~= '' then line = line .. right end
-  line = comment_pad .. left .. line
-  return line
+  if right then line = line .. right end
+  return comment_pad .. left .. line
 end
 
 function M.uncomment_line(l, left, right)
   local line = l
-  if right ~= '' then
-    local esc_right = vim.pesc(right)
-    line = line:gsub(esc_right .. '$', '')
-  end
-  local esc_left = vim.pesc(left)
-  line = line:gsub(esc_left, '', 1)
-
+  if right then line = line:gsub(vim.pesc(right) .. '$', '') end
+  line = line:gsub(vim.pesc(left), '', 1)
   return line
 end
 
@@ -90,12 +79,10 @@ function M.operator(mode)
 end
 
 function M.comment_toggle(line_start, line_end)
-  if type(M.config.hook) == 'function' then
-    M.config.hook()
-  end
+  if type(M.config.hook) == 'function' then M.config.hook() end
 
   local left, right = M.get_comment_wrapper()
-  if not left or not right then return end
+  if not left or (not left and not right) then return end
 
   local lines = api.nvim_buf_get_lines(0, line_start - 1, line_end, false)
   if not lines then return end
@@ -105,6 +92,7 @@ function M.comment_toggle(line_start, line_end)
   local commented_lines_counter = 0
   local empty_counter = 0
   local indent
+
   for _,v in pairs(lines) do
     if v:find('^%s*' .. esc_left) then
       commented_lines_counter = commented_lines_counter + 1
@@ -113,25 +101,19 @@ function M.comment_toggle(line_start, line_end)
     end
     -- TODO what if already commented line has smallest indent?
     -- TODO no tests for this indent block
-    local line_indent = v:match("^%s+")
-    if not line_indent then line_indent = "" end
+    local line_indent = v:match("^%s+") or ""
     if not indent or string.len(line_indent) < string.len(indent) then
       indent = line_indent
     end
   end
 
-  local comment = commented_lines_counter ~= (#lines - empty_counter)
-
   for i,v in pairs(lines) do
-    local line
-    if comment then
-      line = M.comment_line(v, indent, left, right, M.config.comment_empty)
+    if commented_lines_counter ~= (#lines - empty_counter) then
+      lines[i] = M.comment_line(v, indent, left, right, M.config.comment_empty)
     else
-      line = M.uncomment_line(v, left, right)
+      lines[i] = M.uncomment_line(v, left, right)
     end
-    lines[i] = line
   end
-
   api.nvim_buf_set_lines(0, line_start - 1, line_end, false, lines)
 
   -- The lua call seems to clear the visual selection so reset it
@@ -144,7 +126,6 @@ function M.setup(user_opts)
   M.config = vim.tbl_extend('force', M.config, user_opts or {})
 
   -- Messy, change with nvim_exec once merged
-  vim.g.loaded_text_objects_plugin = 1
   local vim_func = [[
   function! CommentOperator(type) abort
     let reg_save = @@
