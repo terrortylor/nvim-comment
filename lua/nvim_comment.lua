@@ -38,21 +38,12 @@ function M.get_comment_wrapper()
 end
 
 function M.comment_line(l, indent, left, right, comment_empty)
-  local line = l
-  local comment_pad = indent
+  if not comment_empty and l:match("^%s*$") then return l end
 
-  if not comment_empty and l:match("^%s*$") then return line end
-
-  -- most linters want padding to be formatted correctly
-  -- so remove comment padding from line
-  if comment_pad then
-    line = l:gsub("^" .. comment_pad, "")
-  else
-    comment_pad = ""
-  end
-
+  -- standarise indentation before adding
+  local line = l:gsub("^" .. indent, "")
   if right then line = line .. right end
-  return comment_pad .. left .. line
+  return indent .. left .. line
 end
 
 function M.uncomment_line(l, left, right)
