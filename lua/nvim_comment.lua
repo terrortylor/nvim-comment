@@ -131,7 +131,7 @@ function M.setup(user_opts)
     local opts = {noremap = true, silent = true}
     api.nvim_set_keymap("n", M.config.line_mapping, "<Cmd>set operatorfunc=CommentOperator<CR>g@l", opts)
     api.nvim_set_keymap("n", M.config.operator_mapping, "<Cmd>set operatorfunc=CommentOperator<CR>g@", opts)
-    api.nvim_set_keymap("v", M.config.operator_mapping, ":<C-u>call CommentOperator(visualmode())<CR>", opts)
+    api.nvim_set_keymap("x", M.config.operator_mapping, ":<C-u>call CommentOperator(visualmode())<CR>", opts)
   end
 end
 
