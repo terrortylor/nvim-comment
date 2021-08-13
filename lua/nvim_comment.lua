@@ -92,7 +92,7 @@ function M.comment_toggle(line_start, line_end)
     end
     -- TODO what if already commented line has smallest indent?
     -- TODO no tests for this indent block
-    if line:match("^%s*$") then goto empty_line end
+    if v:match("^%s*$") then goto empty_line end
     local line_indent = v:match("^%s+") or ""
     if not indent or string.len(line_indent) < string.len(indent) then
       indent = line_indent
