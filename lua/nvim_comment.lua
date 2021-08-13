@@ -85,7 +85,7 @@ function M.comment_toggle(line_start, line_end)
   local indent
 
   for _,v in pairs(lines) do
-    if line == '\n' then goto empty_line
+    if line == '\n' then goto empty_line end
     if v:find('^%s*' .. esc_left) then
       commented_lines_counter = commented_lines_counter + 1
     elseif v:match("^%s*$") then
