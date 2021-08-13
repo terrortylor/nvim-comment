@@ -85,6 +85,7 @@ function M.comment_toggle(line_start, line_end)
   local indent
 
   for _,v in pairs(lines) do
+    if line == '\n' then goto empty_line
     if v:find('^%s*' .. esc_left) then
       commented_lines_counter = commented_lines_counter + 1
     elseif v:match("^%s*$") then
@@ -96,6 +97,7 @@ function M.comment_toggle(line_start, line_end)
     if not indent or string.len(line_indent) < string.len(indent) then
       indent = line_indent
     end
+    ::empty_line::
   end
 
   for i,v in pairs(lines) do
