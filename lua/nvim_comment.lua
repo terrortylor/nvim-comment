@@ -3,7 +3,7 @@ local api = vim.api
 local M = {}
 
 M.config = {
-  -- Linters prefer comment and line to hae a space in between
+  -- Linters prefer comment and line to have a space in between
   marker_padding = true,
   -- should comment out empty or whitespace only lines
   comment_empty = true,
