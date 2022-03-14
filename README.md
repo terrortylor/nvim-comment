@@ -54,6 +54,8 @@ However you can pass in some config options, the defaults are:
   marker_padding = true,
   -- should comment out empty or whitespace only lines
   comment_empty = true,
+	-- trim empty comment whitespace
+	comment_empty_trim_whitespace = true,
   -- Should key mappings be created
   create_mappings = true,
   -- Normal mode mapping left hand side
@@ -70,6 +72,15 @@ However you can pass in some config options, the defaults are:
 ```lua
 require('nvim_comment').setup({comment_empty = false})
 ```
+
+- Don't trim trailing comment whitespace when commenting empty line
+```lua
+require('nvim_comment').setup({comment_empty_trim_whitespace = false})
+```
+
+The default for this is `true`, meaning that a commented empty line will not
+contain any whitespace. Most `commentstring` comment prefixes have some
+whitespace padding, disable this to keep that padding on empty lines.
 
 - Disable mappings
 
@@ -151,17 +162,6 @@ git clone https://github.com/terrortylor/nvim-comment
 ```
 
 ### Via a plugin manager
-
-Using [nvim-pluginman](https://github.com/terrortylor/nvim-pluginman):
-
-```lua
-plug.add({
-  url = "terrortylor/nvim-comment",
-  post_handler = function()
-    require('nvim_comment').setup()
-  end
-})
-```
 
 Using [packer.nvim](https://github.com/wbthomason/packer.nvim):
 

@@ -153,40 +153,52 @@ describe('nvim-comment', function()
 
     for expected,comment_parts in pairs(commentstrings) do
       it('Should comment line as expected, with no padding: ' .. expected, function()
-        local actual = testModule.comment_line('line', "", comment_parts[1], comment_parts[2], true)
+        local actual = testModule.comment_line('line', "", comment_parts[1], comment_parts[2], true, true)
 
         assert.equals(expected, actual)
       end)
     end
 
     it("Should add comment after any whitespace, with padding", function()
-      local actual = testModule.comment_line("  line", "  ",  "-- ", "", true)
+      local actual = testModule.comment_line("  line", "  ",  "-- ", "", true, true)
 
       assert.equals("  -- line", actual)
     end)
 
     it("Should add comment after any whitespace, with extra padding", function()
-      local actual = testModule.comment_line("    line", "  ",  "-- ", "", true)
+      local actual = testModule.comment_line("    line", "  ",  "-- ", "", true, true)
 
       assert.equals("  --   line", actual)
     end)
 
+    it("Should trim whitespace", function()
+      local actual = testModule.comment_line("", "  ",  "-- ", "", true, true)
+
+      assert.equals("  --", actual)
+    end)
+
+    it("Should not trim whitespace", function()
+      local actual = testModule.comment_line("", "  ",  "-- ", "", true, false)
+
+      assert.equals("  -- ", actual)
+    end)
+
     it("Should ignore line if empty or just whitespace", function()
-      local actual = testModule.comment_line("    line", "  ",  "-- ", "", false)
+      local actual = testModule.comment_line("    line", "  ",  "-- ", "", false, true)
 
       assert.equals("  --   line", actual)
 
-      actual = testModule.comment_line("", "  ",  "-- ", "", false)
+      actual = testModule.comment_line("", "  ",  "-- ", "", false, true)
 
       assert.equals("", actual)
 
       -- spaces
-      actual = testModule.comment_line("  ", "  ",  "-- ", "", false)
+      actual = testModule.comment_line("  ", "  ",  "-- ", "", false, true)
 
       assert.equals("  ", actual)
 
       -- Tabs
-      actual = testModule.comment_line("   ", "  ",  "-- ", "", false)
+      actual = testModule.comment_line("   ", "  ",  "-- ", "", false, true)
 
       assert.equals("   ", actual)
     end)
@@ -223,17 +235,29 @@ describe('nvim-comment', function()
       ['<!--line-->'] = {'<!--', '-->'},
       ['<%#line%>'] = {'<%#', '%>'},
       ['> line'] = {'> ', ''},
-      ['      *line'] = {'      *', ''},
+      -- ['      *line'] = {'      *', ''},
       ['"line'] = {'"', ''},
     }
 
     for input,comment_parts in pairs(commentstrings) do
       it('Should uncomment line as expected: ' .. input, function()
-        local actual = testModule.uncomment_line(input, comment_parts[1], comment_parts[2])
+        local actual = testModule.uncomment_line(input, comment_parts[1], comment_parts[2], false)
 
         assert.equals('line', actual)
       end)
     end
+
+    it('Should uncomment if trailing whitespace in left hand side removed, no right hand side', function()
+        local actual = testModule.uncomment_line("--", "-- ", "", true)
+
+        assert.equals('', actual)
+    end)
+
+    it('Should uncomment and not leave padding when comment_empty_trim_whitespace false, no right hand side', function()
+        local actual = testModule.uncomment_line("-- test", "-- ", "", true)
+
+        assert.equals('test', actual)
+    end)
   end)
 
   describe('comment_toggle', function()
