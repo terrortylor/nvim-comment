@@ -37,6 +37,8 @@ Or use the default mappings:
   - `gcip` comment/uncomment a paragraph
   - `gc4w` comment/uncomment current line
   - `gc4j` comment/uncomment 4 lines below the current line
+  - `dic` delete comment block
+  - `gcic` uncomment commented block
 
 ### Configure
 
@@ -54,8 +56,8 @@ However you can pass in some config options, the defaults are:
   marker_padding = true,
   -- should comment out empty or whitespace only lines
   comment_empty = true,
-	-- trim empty comment whitespace
-	comment_empty_trim_whitespace = true,
+  -- trim empty comment whitespace
+  comment_empty_trim_whitespace = true,
   -- Should key mappings be created
   create_mappings = true,
   -- Normal mode mapping left hand side
