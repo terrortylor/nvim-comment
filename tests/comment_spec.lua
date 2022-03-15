@@ -19,7 +19,7 @@ end
 local function runCommandAndAssert(line, feedkeys, expected)
 	goToLineRunKeys(line, feedkeys)
 	local result = getBufLines()
-	assert.are.same(result, vim.split(expected, "\n"))
+	assert.are.same(vim.split(expected, "\n"), result)
 end
 
 describe("comment/uncomment", function()
@@ -272,6 +272,108 @@ end]]
 	end)
 end)
 
+describe("comment chunks", function()
+	before_each(function()
+		local testModule = require("nvim_comment")
+		testModule.setup({
+			marker_padding = true,
+			comment_empty = true,
+		})
+	end)
+
+	local input = [[
+-- local foo = 'foo'
+-- local bar = 'bar'
+-- local baz = 'baz'
+local foo = 'foo'
+local baz = 'baz'
+-- local foo = 'foo'
+local baz = 'baz'
+-- local foo = 'foo'
+-- local foo = 'foo'
+local bar = 'bar'
+local baz = 'baz'
+-- local foo = 'foo'
+-- local bar = 'bar']]
+
+	it("Should handle text obeject at top of buffer", function()
+		local expected = [[
+local foo = 'foo'
+local bar = 'bar'
+local baz = 'baz'
+local foo = 'foo'
+local baz = 'baz'
+-- local foo = 'foo'
+local baz = 'baz'
+-- local foo = 'foo'
+-- local foo = 'foo'
+local bar = 'bar'
+local baz = 'baz'
+-- local foo = 'foo'
+-- local bar = 'bar']]
+
+		setUpBuffer(input, "lua")
+		runCommandAndAssert(1, "gcic", expected)
+	end)
+
+	it("Should handle text obeject at botton of buffer", function()
+		local expected = [[
+-- local foo = 'foo'
+-- local bar = 'bar'
+-- local baz = 'baz'
+local foo = 'foo'
+local baz = 'baz'
+-- local foo = 'foo'
+local baz = 'baz'
+-- local foo = 'foo'
+-- local foo = 'foo'
+local bar = 'bar'
+local baz = 'baz'
+local foo = 'foo'
+local bar = 'bar']]
+
+		setUpBuffer(input, "lua")
+		runCommandAndAssert(1, "Ggcic", expected)
+	end)
+
+	it("Should handle single line text object", function()
+		local expected = [[
+-- local foo = 'foo'
+-- local bar = 'bar'
+-- local baz = 'baz'
+local foo = 'foo'
+local baz = 'baz'
+local baz = 'baz'
+-- local foo = 'foo'
+-- local foo = 'foo'
+local bar = 'bar'
+local baz = 'baz'
+-- local foo = 'foo'
+-- local bar = 'bar']]
+
+		setUpBuffer(input, "lua")
+		runCommandAndAssert(6, "dic", expected)
+	end)
+
+	it("Should handle multi line text object", function()
+		local expected = [[
+-- local foo = 'foo'
+-- local bar = 'bar'
+-- local baz = 'baz'
+local foo = 'foo'
+local baz = 'baz'
+-- local foo = 'foo'
+local baz = 'baz'
+local bar = 'bar'
+local baz = 'baz'
+-- local foo = 'foo'
+-- local bar = 'bar']]
+
+		setUpBuffer(input, "lua")
+		runCommandAndAssert(9, "dic", expected)
+	end)
+end)
+
 describe("issues", function()
 	before_each(function()
 		local testModule = require("nvim_comment")
@@ -312,12 +414,12 @@ this is some block
 yeah]]
 
 		local expected = [[
--- this is some block
---   of idented text
---
---   with empty lines
--- yeah]]
+this is some block
+  -- of idented text
+  --
+  with empty lines
+yeah]]
 		setUpBuffer(input, "lua")
-		runCommandAndAssert(1, "gg0<c-v>Ggc", expected)
+		runCommandAndAssert(1, "ggjVjgc", expected)
 	end)
 end)

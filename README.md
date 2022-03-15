@@ -62,6 +62,8 @@ However you can pass in some config options, the defaults are:
   line_mapping = "gcc",
   -- Visual/Operator mapping left hand side
   operator_mapping = "gc",
+  -- text object mapping, comment chunk,,
+  comment_chunk_text_object = "ic",
   -- Hook function to call before commenting takes place
   hook = nil
 }
@@ -91,7 +93,7 @@ require('nvim_comment').setup({create_mappings = false})
 - Custom mappings
 
 ```lua
-require('nvim_comment').setup({line_mapping = "<leader>cl", operator_mapping = "<leader>c"})
+require('nvim_comment').setup({line_mapping = "<leader>cl", operator_mapping = "<leader>c", comment_chunk_text_object = "ic"})
 ```
 
 - Disable marker padding
