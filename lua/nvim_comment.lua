@@ -197,6 +197,7 @@ function M.setup(user_opts)
     let @@ = reg_save
   endfunction
   ]]
+
 	vim.api.nvim_call_function("execute", { vim_func })
 	vim.api.nvim_command("command! -range CommentToggle lua require('nvim_comment').comment_toggle(<line1>, <line2>)")
 
@@ -204,7 +205,7 @@ function M.setup(user_opts)
 		local opts = { noremap = true, silent = true }
 		api.nvim_set_keymap("n", M.config.line_mapping, "<Cmd>set operatorfunc=CommentOperator<CR>g@l", opts)
 		api.nvim_set_keymap("n", M.config.operator_mapping, "<Cmd>set operatorfunc=CommentOperator<CR>g@", opts)
-		api.nvim_set_keymap("v", M.config.operator_mapping, ":<C-u>call CommentOperator(visualmode())<CR>", opts)
+		api.nvim_set_keymap("x", M.config.operator_mapping, ":<C-u>call CommentOperator(visualmode())<CR>", opts)
 		api.nvim_set_keymap(
 			"x",
 			M.config.comment_chunk_text_object,
