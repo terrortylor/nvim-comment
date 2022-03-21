@@ -170,6 +170,8 @@ git clone https://github.com/terrortylor/nvim-comment
 Using [packer.nvim](https://github.com/wbthomason/packer.nvim):
 
 ```lua
-use "terrortylor/nvim-comment"
-require('nvim_comment').setup()
+use {
+  "terrortylor/nvim-comment",
+  config = function() require('nvim_comment').setup() end,
+}
 ```
