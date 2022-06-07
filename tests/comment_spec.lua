@@ -40,8 +40,6 @@ end
 		})
 	end)
 
-	after_each(function() end)
-
 	it("Should comment/uncomment line with dot repeatable", function()
 		local expected = [[
 -- local function dummy_func()
@@ -100,6 +98,24 @@ end
 		runCommandAndAssert(1, "gc2j", input)
 		-- comment, via dot
 		runCommandAndAssert(1, ".", expected)
+	end)
+
+	it("Should ignore trailing whitespace in commentstring when uncommenting", function()
+		local input = [[
+--local function dummy_func() end
+]]
+		local expected_uncommented = [[
+local function dummy_func() end
+]]
+		local expected_commented = [[
+-- local function dummy_func() end
+]]
+
+		setUpBuffer(input, "lua")
+		-- Uncomment
+		runCommandAndAssert(1, "gcc", expected_uncommented)
+		-- Comment
+		runCommandAndAssert(1, "gcc", expected_commented)
 	end)
 
 	it("Should comment out another pararaph via dot", function()
@@ -316,7 +332,7 @@ local baz = 'baz'
 		runCommandAndAssert(1, "gcic", expected)
 	end)
 
-	it("Should handle text obeject at botton of buffer", function()
+	it("Should handle text object at bottom of buffer", function()
 		local expected = [[
 -- local foo = 'foo'
 -- local bar = 'bar'

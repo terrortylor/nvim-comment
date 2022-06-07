@@ -54,7 +54,7 @@ function M.comment_line(l, indent, left, right, comment_empty, comment_empty_tri
 
 	local line_empty = l:match("^%s*$")
 
-	-- standarise indentation before adding
+	-- standardise indentation before adding
 	local line = l:gsub("^" .. indent, "")
 	if right then
 		line = line .. right
@@ -82,7 +82,12 @@ function M.uncomment_line(l, left, right, comment_empty_trim_whitespace)
 		end
 	end
 
-	return line:gsub(vim.pesc(left), "", 1)
+	-- Ignore trailing whitespace in comment chars. This allows
+	-- uncommenting the line '--line' to 'line' even if the comment string is '-- '.
+	local trailing_ws_amount = #left:match("%s+$")
+	local left_stripped = left:sub(1, #left - trailing_ws_amount)
+	local pattern = vim.pesc(left_stripped) .. ("%s?"):rep(trailing_ws_amount)
+	return line:gsub(pattern, "", 1)
 end
 
 function M.operator(mode)
