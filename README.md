@@ -20,6 +20,12 @@ lines in the given range are commented then it uncomments, otherwise it comments
 the range. This is useful when commenting a block out for testing with a real
 like comment in it; as for the plugin a comment is a comment.
 
+## Installation
+
+```lua
+use 'terrortylor/nvim-comment'
+```
+
 ## Usage
 
 Either use the command `CommentToggle`, e.g.:
