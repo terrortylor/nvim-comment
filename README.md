@@ -10,7 +10,7 @@ plugins written in Lua are:
   toggle code when debugging
 - Uses the built in `commentstring` buffer option to define comment markers
 - Where a marker doesn't have a **space** character as padding this is added,
-  configurable (this can be disabled in the options, see below but if useful
+  configurable (this can be disabled in the options, see below but is useful
   when working with numerous linters)
 - Supports motions
 - Dot `.` repeatable

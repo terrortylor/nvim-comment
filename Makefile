@@ -17,7 +17,7 @@ gh-integration:
 
 integration:
 	@echo "Run integration tests..."
-	nvim --headless --noplugin -c "PlenaryBustedDirectory tests"
+	nvim --headless --noplugin -c 'packadd plenary.nvim' -c "PlenaryBustedDirectory tests"
 	@echo
 
 test: unit integration

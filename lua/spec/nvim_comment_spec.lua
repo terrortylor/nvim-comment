@@ -271,11 +271,11 @@ describe('nvim-comment', function()
 
       testModule.comment_toggle(1, 3)
 
-      assert.stub(api_mock.nvim_buf_set_lines).was_called_with(0, 0, 3, false, {
+      assert.stub(api_mock.nvim_call_function).was_called_with("setline", {1, {
         "-- line1",
         "-- line2",
         "-- line3",
-      })
+      }})
       assert.stub(api_mock.nvim_call_function).was_called_with('setpos', {"'<", {0, 1, 1, 0}})
       assert.stub(api_mock.nvim_call_function).was_called_with('setpos', {"'>", {0, 3, 2147483647, 0}})
 
@@ -291,11 +291,11 @@ describe('nvim-comment', function()
 
       testModule.comment_toggle(1, 3)
 
-      assert.stub(api_mock.nvim_buf_set_lines).was_called_with(0, 0, 3, false, {
+      assert.stub(api_mock.nvim_call_function).was_called_with("setline", {1, {
         "line1",
         "line2",
         "line3",
-      })
+      }})
       assert.stub(api_mock.nvim_call_function).was_called_with('setpos', {"'<", {0, 1, 1, 0}})
       assert.stub(api_mock.nvim_call_function).was_called_with('setpos', {"'>", {0, 3, 2147483647, 0}})
     end)
@@ -310,11 +310,11 @@ describe('nvim-comment', function()
 
       testModule.comment_toggle(1, 3)
 
-      assert.stub(api_mock.nvim_buf_set_lines).was_called_with(0, 0, 3, false, {
+      assert.stub(api_mock.nvim_call_function).was_called_with("setline", {1, {
         "-- line1",
         "-- -- line2",
         "-- line3",
-      })
+      }})
       assert.stub(api_mock.nvim_call_function).was_called_with('setpos', {"'<", {0, 1, 1, 0}})
       assert.stub(api_mock.nvim_call_function).was_called_with('setpos', {"'>", {0, 3, 2147483647, 0}})
     end)
@@ -329,11 +329,11 @@ describe('nvim-comment', function()
 
       testModule.comment_toggle(1, 3)
 
-      assert.stub(api_mock.nvim_buf_set_lines).was_called_with(0, 0, 3, false, {
+      assert.stub(api_mock.nvim_call_function).was_called_with("setline", {1, {
         "(* line1 *)",
         "(* line2 *)",
         "(* line3 *)",
-      })
+      }})
       assert.stub(api_mock.nvim_call_function).was_called_with('setpos', {"'<", {0, 1, 1, 0}})
       assert.stub(api_mock.nvim_call_function).was_called_with('setpos', {"'>", {0, 3, 2147483647, 0}})
     end)
@@ -348,11 +348,11 @@ describe('nvim-comment', function()
 
       testModule.comment_toggle(1, 3)
 
-      assert.stub(api_mock.nvim_buf_set_lines).was_called_with(0, 0, 3, false, {
+      assert.stub(api_mock.nvim_call_function).was_called_with("setline", {1, {
         "line1",
         "line2",
         "line3",
-      })
+      }})
       assert.stub(api_mock.nvim_call_function).was_called_with('setpos', {"'<", {0, 1, 1, 0}})
       assert.stub(api_mock.nvim_call_function).was_called_with('setpos', {"'>", {0, 3, 2147483647, 0}})
     end)
