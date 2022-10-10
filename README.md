@@ -40,6 +40,15 @@ Or use the default mappings:
   - `dic` delete comment block
   - `gcic` uncomment commented block
 
+## Installation
+
+Install using [Packer](https://github.com/wbthomason/packer.nvim).
+Add the following line to your `~/.config/nvim/init.lua`
+
+```lua
+use 'terrortylor/nvim-comment'
+```
+
 ### Configure
 
 The comment plugin needs to be initialised using:
