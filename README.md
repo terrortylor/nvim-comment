@@ -131,16 +131,24 @@ vim.api.nvim_buf_set_option(0, "commentstring", "# %s")
 ```
 
 You can also use an autocommand to automatically load your `commentstring` for
-certain file types:
+certain file types. For example, to load a `commentstring` for sql files,
+in a config file, add:
 
-```vim
-" when you enter a (new) buffer
-augroup set-commentstring-ag
-autocmd!
-autocmd BufEnter *.cpp,*.h :lua vim.api.nvim_buf_set_option(0, "commentstring", "// %s")
-" when you've changed the name of a file opened in a buffer, the file type may have changed
-autocmd BufFilePost *.cpp,*.h :lua vim.api.nvim_buf_set_option(0, "commentstring", "// %s")
-augroup END
+```lua
+-- Creates an autocmd group for comment specifications
+vim.api.nvim_create_augroup("comment", { clear = true })
+
+-- Creates an autocmd that runs on BufEnter and BufFilePost
+-- We use the `BufFilePost` trigger so that we can comment after changing file extensions
+-- Without needing to repoen the buffer 
+vim.api.nvim_create_autocmd({"BufEnter", "BufFilePost"}, {
+  group = "comment",
+  pattern = {"*.sql"},
+  callback = function()
+    -- In SQL, lines are commented with "--"
+    vim.api.nvim_buf_set_option(0, "commentstring", "-- %s")
+  end
+})
 ```
 
 Or add the comment string option in the relevant `filetype` file:
